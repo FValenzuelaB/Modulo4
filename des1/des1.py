@@ -24,7 +24,7 @@ class Velocidad_escape:
 class Rentabilidad:
     def __init__(self,precio:int,usuarios:int,gastos:int):
         self.__precio=precio
-        self.__usuarios:usuarios
+        self.__usuarios=usuarios
         self.__gastos=gastos
     
     @property
@@ -88,7 +88,7 @@ class Menu:
         1. Velocidad de escape
         2. Rentabilidad 1 (solo usuarios normales)
         3. Rentabilidad 2 (con usuarios premium)
-        4. Rentabilidad 3 (Razón de utilidades ahora vs año pasado)
+        4. Rentabilidad 3 (Razón de utilidades ahora vs pasado)
         5. Salir
         """)
 
@@ -114,10 +114,10 @@ class Getget:
     @staticmethod
     def Rent2():
         precio=int(input("Ingrese el precio de suscripción: "))
-        usuarios=int(input("Ingrese la cantidad de usuarios: "))
-        premium=int(input("Ingrese numero de usuarios premium"))
+        usuarios=int(input("Ingrese la cantidad de usuarios regulares: "))
+        premium=int(input("Ingrese numero de usuarios premium: "))
         gastos=int(input("Ingrese los gastos totales: "))
-        return Rentabilidad(precio,usuarios,gastos,premium)
+        return Rentabilidad_premium(precio,usuarios,gastos,premium)
 
     @staticmethod
     def Rent3():
@@ -130,8 +130,8 @@ class Getget:
 
 class App():
     def run(self):
+        Menu.limpiar_consola()
         while True:
-            Menu.limpiar_consola()
             Menu.mostrar_menu()\
             
             opcion = input("Elige una opcion : ")
@@ -139,31 +139,39 @@ class App():
             #Velocidad de escape
             if opcion == "1":
                 v= Getget.vel_escape()
-                vel=math.sqrt(2*v[0]*v[1])/1000
+                vel = math.sqrt(2 * v.cte_g * v.radio*1000)
+                Menu.limpiar_consola()
                 print(f"La velocidad es {vel:.1f} metros por segundos!")
                 
             # Rentabilidad 1
             elif opcion == "2":
-                r = Getget.Rentabilidad()
-                rent1=r[0]*r[1]-r[2]
+                r = Getget.Rent1()
+                rent1=r.usuarios*r.precio-r.gastos
+                Menu.limpiar_consola()
                 print(f"Las utilidades son de {rent1} pesos!")
 
 
             elif opcion == "3":
-                r = Getget.Rentabilidad_premium()
-                rent2=(r[0]*r[1]+r[0]*1,5*r[3])-r[2]
+                r = Getget.Rent2()
+                rent2=(r.usuarios*r.precio+r.precio*1.5*r.user_p)-r.gastos
+                Menu.limpiar_consola()
                 print(f"Las utilidades son de {rent2} pesos!")
 
             
             elif opcion == "4":
-                r = Getget.Razon()
-                razon=(r[0]*r[1]-r[2])/r[3]
-                print(f"La razón de utilidad actual versus anterior es de {razon}")
+                r = Getget.Rent3()
+                razon=(r.precio*r.usuarios-r.gastos)/r.ut_ant
+                Menu.limpiar_consola()
+                print(f"La razón de utilidad actual versus anterior es de {razon:.2f}")
 
             elif opcion == "5":
                 Menu.limpiar_consola()
                 print("Hasta luego!")
                 break
+
+            else:
+                Menu.limpiar_consola()
+                print("Porfavor ingrese una opción valida")
 owo=App()                   
 owo.run()
 
