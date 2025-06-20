@@ -32,9 +32,10 @@ class Producto:
     
     #se sobrecarga suma para poder sumar clases
     def __iadd__(self, otro):
-        if self.nombre == otro.nombre:
+        if self == otro:
             self.stock += otro.stock
-            return self
+            nuevo=Producto(self.nombre,self.precio,self.stock)
+            return nuevo
         raise ValueError("No se pueden sumar productos diferentes")
     
     #se sobrecarga resta para poder restar clases
