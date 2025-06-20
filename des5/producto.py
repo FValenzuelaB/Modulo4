@@ -49,10 +49,3 @@ class Producto:
     def __str__(self):
         return f"Producto: {self.nombre}\nPrecio = ${self.precio}\nstock={self.stock}"
     
-
-
-potato=Producto("burger",1500,1)
-owo=Producto("burger",1500,10)
-if potato.nombre==owo.nombre:
-    potato+=owo
-print(potato)
