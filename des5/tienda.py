@@ -39,6 +39,8 @@ class Tienda(ABC):
                 return producto
         return None
 
+    def __str__(self):
+        return f"Nombre de la tienda: {self.nombre}\nPrecio de delivery: ${self.delivery}\n"
 
 class Restaurante(Tienda):
     def ingresar_producto(self):
@@ -53,7 +55,7 @@ class Restaurante(Tienda):
 
     def listar_productos(self):
         lista="Productos restaurante:\n "
-        for producto in self.productos:
+        for producto in self._productos:
             lista+= f"Producto: {producto.nombre}, Precio: ${producto.precio}\n"
         return lista
     
