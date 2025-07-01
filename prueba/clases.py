@@ -1,89 +1,101 @@
-from abc import ABC,abstractmethod
-from error import LargoExcedidoError,SubTipoInvalidoError
+from abc import abstractmethod , ABC
+from error import LargoExcedidoError, SubTipoInvalidoError
 
 class Anuncio(ABC):
-    def __init__(self,ancho,alto,url_archivo,url_click,subtipo):
-        self.__ancho=ancho if ancho>0 else 1
-        self.__alto=alto if alto>0 else 1
-        self.__url_archivo=url_archivo
-        self.__url_click=url_click
-        self.__subtipo=subtipo
+    def __init__(self, ancho, alto, url_archivo, url_click, sub_tipo):
+        self.__ancho = ancho if ancho > 0 else 1
+        self.__alto = alto if alto > 0 else 1
+        self.__url_archivo = url_archivo
+        self.__url_click = url_click
+        self.__sub_tipo = sub_tipo
 
-    def __repr__(self):
-        return
     
     @property
     def ancho(self):
-        return self.__ancho   
+        return self.__ancho
+    
     @ancho.setter
-    def ancho(self,ancho):
-        self.__ancho=ancho
+    def ancho(self, ancho):
+        self.__ancho = ancho
 
     @property
     def alto(self):
         return self.__alto
+    
     @alto.setter
-    def alto(self,alto):
-        self.__alto=alto
+    def alto(self, alto):
+        self.__alto = alto
 
     @property
     def url_archivo(self):
         return self.__url_archivo
+    
     @url_archivo.setter
-    def url_archivo(self,url_archivo):
-        self.__url_archivo=url_archivo
+    def ancho(self, url_archivo):
+        self.__url_archivo = url_archivo
+
 
     @property
     def url_click(self):
         return self.__url_click
+    
     @url_click.setter
-    def url_click(self,url_click):
-        self.__url_click=url_click
+    def url_click(self, url_click):
+        self.__url_click = url_click
+
+    @property
+    def sub_tipo(self):
+        return self.__sub_tipo
+    
+    @sub_tipo.setter
+    def sub_tipo(self, sub_tipo):
+
+        if (isinstance(self,Video) and sub_tipo in Video.SUB_TIPOS
+            or isinstance(self,Social) and sub_tipo in Social.SUB_TIPOS
+            or isinstance(self,Display) and sub_tipo in Display.SUB_TIPOS):
+            self.__sub_tipo = sub_tipo
+
+        else:
+            raise SubTipoInvalidoError
+        
+
+       
 
     @staticmethod
     def mostrar_formatos():
         return {Video.FORMATO} - {Social.FORMATO} 
     
-    @property
-    def subtipo(self):
-        return self.__subtipo
-    @subtipo.setter
-    def subtipo(self,subtipo):       
-        if (isinstance(self,Video) and self.subtipo in Video.SUB_TIPOS 
-            or isinstance(self,Display) and self.subtipo in Display.SUB_TIPOS
-            or isinstance(self,Social) and self.subtipo in Social.SUB_TIPOS):
-            self.__subtipo=subtipo 
-        else:
-            raise SubTipoInvalidoError
 
     
-    
-    @abstractmethod
+    @abstractmethod  
     def comprimir_anuncio():
         pass
-    
     @abstractmethod
     def redimensionar_anuncio():
         pass
 
 
 class Campana:
-    def __init__(self,nombre:str,fecha_inicio,fecha_termino):
-        self.__nombre=nombre
-        self.__fecha_inicio=fecha_inicio
-        self.__fecha_termino=fecha_termino
-        self.__anuncios=[self.componer_anuncio()]
+    def __init__(self,nombre,fecha_inicio, fecha_termino):
+        self.__nombre = nombre 
+        self.__fecha_inicio = fecha_inicio
+        self.__fecha_termino = fecha_termino
+        self.__anuncios = [self.componer_anuncio()]
+
+
 
     def componer_anuncio(self):
+        
         opcion = int(input("que tipo de anuncio quieres  1 -  para video - 2 para display - 3 para social"))
         if opcion == 1:
-            duracion = int(input("cual es la duracion del video? (minimo 5): "))
+            duracion = int(input("cual es la duracion del video  minimo 5"))
             new_anuncio = Video(duracion)
         elif opcion == 2:
             new_anuncio = Display()
         elif opcion == 3:
             new_anuncio = Social()
         return new_anuncio
+    
 
     def agregar_anuncios(self):
         while True:
@@ -102,93 +114,115 @@ class Campana:
             except Exception as e:
                 pass
 
+        
+
+        #opcion que el usuario pone la opcion y entramos al bucle (while)
+        #self.__anuncios.append(new_anuncio)
+
     @property
     def nombre(self):
         return self.__nombre
+
     @nombre.setter
-    def nombre(self,nombre):
-        if len(nombre)<250:
-            self.__nombre=nombre
+    def nombre(self, nombre):
+        if len(nombre) <= 250:
+            self.__nombre = nombre
         else:
-            raise LargoExcedidoError
-    
+            raise  LargoExcedidoError("el largo del texto supera los 250 caracteres")
+
     @property
     def fecha_inicio(self):
         return self.__fecha_inicio
+
     @fecha_inicio.setter
-    def fecha_inicio(self,fecha_inicio):
-        self.__fecha_inicio=fecha_inicio
+    def fecha_inicio(self, fecha_inicio):
+        self.__fecha_inicio = fecha_inicio
+
 
     @property
     def fecha_termino(self):
         return self.__fecha_termino
-    @fecha_termino.setter
-    def fecha_termino(self,fecha_termino):
-        self.__fecha_termino=fecha_termino
 
+    @fecha_termino.setter
+    def fecha_termino(self, fecha_termino):
+        self.__fecha_termino = fecha_termino
+
+    @property
+    def fecha_termino(self):
+        return self.__fecha_termino
+    
     @property
     def anuncios(self):
         return self.__anuncios
-
+    
     def __repr__(self):
-        return f"{self.__nombre} Anuncios:{self.__anuncios}"
-
+        return f"nombre de campana  :{self.nombre} - {self.__anuncios}"
+            
 
 class Video(Anuncio):
-    FORMATO="Video"
-    SUB_TIPOS=("instream","outstream")
-    def __init__(self,duracion):
-        self.ancho=1
-        self.alto=1
-        self.__duracion=duracion if duracion>0 else 5
+    FORMATO = "Video"
+    SUB_TIPOS = ("INSTREAM" , "OUTSTREAM" )
+
+    def __init__(self,duracion, subtipo):
+        self.ancho = 1 
+        self.alto = 1
+        self.__duracion = duracion if duracion > 0 else 5
+        self.sub_tipo = subtipo
 
     @property
     def duracion(self):
         return self.__duracion
+
     @duracion.setter
     def duracion(self,duracion):
-        self.__duracion=duracion
+        self.__duracion = duracion 
 
+      
     def comprimir_anuncio():
-        print("COMPRESIÓN DE VIDEO NO IMPLEMENTADA AÚN\n")
+        print("COMPRESIÓN DE VIDEO NO IMPLEMENTADA AÚN")
     
     def redimensionar_anuncio():
-        print("RECORTE DE VIDEO NO IMPLEMENTADO AÚN\n")
+        print( "RECORTE DE VIDEO NO IMPLEMENTADO AÚN")
 
     def __repr__(self):
         return f"{Video.FORMATO} - {self.duracion}"
+    
 
 class Display(Anuncio):
-    FORMATO="Display"
-    SUB_TIPOS=("tradicional","native")
+    FORMATO = "DISPLAY"
+    SUB_TIPOS = ("TRADICIONAL" , "NATIVE")
 
-    def __init__(self,ancho,alto,url_archivo,url_click,subtipo):
-        super().__init__(ancho, alto, url_archivo, url_click, subtipo)
+
+    def __init__(self, ancho, alto, url_archivo, url_click, sub_tipo):
+        super().__init__(ancho, alto, url_archivo, url_click, sub_tipo)
+        
+
 
     def comprimir_anuncio():
-        print("COMPRESIÓN DE ANUNCIOS DISPLAY NO IMPLEMENTADA AÚN\n")
+        print("COMPRESIÓN DE VIDEO NO IMPLEMENTADA AÚN")
     
     def redimensionar_anuncio():
-        print("REDIMENSIONAMIENTO DE ANUNCIOS DISPLAY NO IMPLEMENTADO AÚN\n")
-    
+        print( "RECORTE DE VIDEO NO IMPLEMENTADO AÚN")
+
     def __repr__(self):
         return f"{Display.FORMATO}"
 
 
 class Social(Anuncio):
-    FORMATO="Social"
-    SUB_TIPOS=("facebook","linkedin")
+    FORMATO = "SOCIAL"
+    SUB_TIPOS = ("FACEBOOK" , "LINKEDIN" )
 
-    def __init__(self,ancho,alto,url_archivo,url_click,subtipo):
-        super().__init__(ancho, alto, url_archivo, url_click, subtipo)
+    def __init__(self, ancho, alto, url_archivo, url_click, sub_tipo):
+        super().__init__(ancho, alto, url_archivo, url_click, sub_tipo)
+        
 
     def comprimir_anuncio():
-        print("COMPRESIÓN DE ANUNCIOS DE REDES SOCIALES NO IMPLEMENTADA AÚN\n")
+        print("COMPRESIÓN DE VIDEO NO IMPLEMENTADA AÚN")
     
     def redimensionar_anuncio():
-        print("REDIMENSIONAMIENTO DE ANUNCIOS DE REDES SOCIALES NO IMPLEMENTADO AÚN\n")
+        print( "RECORTE DE VIDEO NO IMPLEMENTADO AÚN")
 
     def __repr__(self):
         return f"{Social.FORMATO}"
 
-
+__all__ = ['Video', 'Display', 'Social', 'Campana']
